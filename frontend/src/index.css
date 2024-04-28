@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+
+  color-scheme: light dark;
+  color: #fff;
+  background-color: #242424;
+}
+
+#root {
+  display: flex;
+  flex-flow: column;
+  min-height: 100%;
+}
+html,
+body {
+  height: 100%;
+}
+
+a:active {
+  opacity: 0.8;
+}
+
+.error-icon::before {
+  content: "\026a0";
+  padding-right: 0.5em;
+}
+
+.base-btn:not(:disabled):hover,
+.base-btn:not(:disabled):focus-visible {
+  opacity: 0.8;
+}
+.base-btn:not(:disabled):active {
+  opacity: 0.6;
+}
+
+.placeholder {
+  min-height: 1rem;
+  min-width: 1rem;
+  animation: placeholder 1s linear infinite alternate;
+}
+
+@keyframes placeholder {
+  from {
+    background: rgba(3 3 3/0.1);
+  }
+  to {
+    background: rgba(250 250 250/0.1);
+  }
+}

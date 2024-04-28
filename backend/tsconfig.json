@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+
+    "target": "es2016",
+    "module": "nodenext",
+    "rootDir": "src",
+    "declarationMap": false,
+    "sourceMap": false,
+    // "outFile": "./index.js",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    // "noImplicitAny": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },  
+  },
+  "include": ["src", "src/custom.d.ts"],
+  "exclude": ["node_modules"],
+}

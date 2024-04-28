@@ -1,0 +1,10 @@
+.dockerignore
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*
+.env*.local
+.git
+.gitignore
+.npmrc
+.DS_Store

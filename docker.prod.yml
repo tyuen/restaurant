@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  sslproxy:
+    image: nginx:stable-alpine
+    ports:
+      - 3001:3001
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/localhost.pem:/etc/nginx/cert/mycert.pem:ro
+      - ./nginx/localhost-key.pem:/etc/nginx/cert/mycert-key.pem:ro
+
+  frontend:
+    build:
+      context: ./frontend/
+    volumes:
+      - ./.env:/app/.env:ro
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend/
+    environment:
+      NODE_ENV: production
+      DB_HOST: ${DB_HOST}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./.env:/app/.env:ro
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  # adminer:
+  #   image: adminer
+  #   restart: unless-stopped
+  #   environment:
+  #     - ADMINER_DEFAULT_SERVER=pgsql
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - db

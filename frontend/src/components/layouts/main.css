@@ -1,0 +1,12 @@
+@keyframes layout-anim1 {
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+}
+@keyframes layout-anim2 {
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+}
