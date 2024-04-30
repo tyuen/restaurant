@@ -1,6 +1,7 @@
 import "./main.css";
 import { useRef, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import Header from "../header/Header";
 
 const ANIM1 = {
   animation: "layout-anim1 0.3s ease-in-out",
@@ -30,6 +31,7 @@ export default function Layout() {
         className="flex flex-col items-stretch grow origin-top"
         style={animClass.current}
       >
+        <Header />
         <Outlet />
       </div>
     </>

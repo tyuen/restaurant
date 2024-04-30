@@ -34,8 +34,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     working_dir: /home/node/app
     command: sh -c "npm run dev"
-    # tty: true
-    # stdin_open: true
     restart: unless-stopped
     ports:
       - 4000:4000

@@ -7,5 +7,5 @@ export default function (
   _next: NextFunction,
 ) {
   console.error(err.stack);
-  res.status(500).send({ error: "Unhandled exception" });
+  res.status(409).send({ error: "Unhandled exception" });
 }

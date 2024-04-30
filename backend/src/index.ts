@@ -1,15 +1,15 @@
 import express, { type Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import path from "node:path";
-import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 
 import errorHandler from "./middleware/errorHandler";
 import corsPostOnly from "./middleware/corsPostOnly";
 import addResponseHeaders from "./middleware/responseHeaders";
-import checkSessionCookie from "./middleware/checkSessionCookie";
+
 import cookieSession from "cookie-session";
+import { extendCookieExpires } from "./middleware/sessionCookie";
 
 import { router } from "./routes/router";
 
@@ -25,7 +25,7 @@ const app = express();
 
 app.use(addResponseHeaders);
 app.use(corsPostOnly);
-app.use(checkSessionCookie);
+app.use(extendCookieExpires);
 
 app.use(bodyParser.json());
 
@@ -38,11 +38,13 @@ app.use(
     secret: process.env.COOKIE_SESSION_KEY!,
   }),
 );
-app.use(cors());
+// app.use(cors());
 app.set("trust proxy", 1 /* number of proxies between user and server */);
 app.use("/api", router);
 
 app.use(errorHandler);
+
+app.all("*", (req, res) => res.status(404).send({ error: "404" }));
 
 const server = app.listen(4000, () => {
   console.log(`Listening on ${JSON.stringify(server.address())}`);

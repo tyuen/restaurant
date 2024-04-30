@@ -9,12 +9,15 @@ import LazyLoading from "./components/LazyLoading";
 import Layout from "./components/layouts/main";
 
 //routes
-import Home from "./pages/Home";
+import Home from "./pages/Home/index";
 import NotFound from "./pages/404";
 
 //lazy loaded routes
 const Login = lazySuspense(() => import("./pages/Login"));
 const Register = lazySuspense(() => import("./pages/Register"));
+const Profile = lazySuspense(() => import("./pages/Profile"));
+const Merchant = lazySuspense(() => import("./pages/Merchant/index"));
+const Products = lazySuspense(() => import("./pages/Products/index"));
 
 function AppRoutes() {
   return (
@@ -25,6 +28,9 @@ function AppRoutes() {
           <Route path="*" element={<NotFound />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="shop/:id" element={<Merchant />} />
+          <Route path="products" element={<Products />} />
         </Route>
       </Routes>
     </Router>
