@@ -30,7 +30,7 @@ export default function Products() {
   return (
     <main className="max-w-screen-lg w-full mx-auto p-2">
       <section>
-        <Heading text="Last Order" />
+        <Heading text="Your Last Order" />
 
         {latest.isPending ? (
           <div className="py-16">
@@ -41,17 +41,17 @@ export default function Products() {
             No orders.
           </div>
         ) : latest.data ? (
-          <OrderPanel order={latest.data} />
+          <OrderPanel order={latest.data} showTotal={true} />
         ) : null}
       </section>
 
-      <section>
+      <section className="mt-10">
         <Heading text="Recent Orders" />
         {orders.isPending ? (
           <div className="py-16">
             <Spinner className="mx-auto border-muted-foreground w-8 h-8" />
           </div>
-        ) : orders.data?.list?.length <= 0 ? (
+        ) : !orders.data?.list?.length ? (
           <div className="text-center py-10 md:py-16 text-muted-foreground border border-muted">
             No orders.
           </div>

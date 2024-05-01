@@ -30,7 +30,7 @@ function AppRoutes() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="shop/:id" element={<Merchant />} />
+          <Route path="merchant/:id" element={<Merchant />} />
           <Route path="products" element={<Products />} />
           <Route path="orders" element={<Orders />} />
         </Route>

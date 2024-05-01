@@ -76,3 +76,55 @@ router.post("/latest", verifySession, (req: Request, res: Response) => {
       },
     );
 });
+
+type OrderParams = { merchantId: number; list: { id: number; qty: number }[] };
+
+router.post(
+  "/add",
+  verifySession,
+  sync(async (req: Request, res: Response) => {
+    const { list, merchantId }: OrderParams = req.body;
+    const { id } = req.session || {};
+
+    if (
+      !(merchantId >= 0) ||
+      !list?.find ||
+      list.find(n => !(n.id >= 0) || !n.qty)
+    ) {
+      res.status(400).send({ error: "Invalid format" });
+      return;
+    }
+
+    //get the prices of all products
+    const priceMap = new Map<number, string>();
+    const catalog = await db.query.merchantProducts.findMany({
+      where: eq(merchantProducts.merchantId, merchantId),
+      columns: { id: true, price: true },
+    });
+    catalog.forEach(n => priceMap.set(n.id, n.price!));
+
+    //attach the prices to the order list
+    const listCleaned = list.map(n => ({
+      orderId: -1,
+      productId: n.id,
+      quantity: n.qty,
+      price: priceMap.get(n.id)!,
+    }));
+
+    await db.transaction(async tx => {
+      const insertOrder = await tx
+        .insert(orders)
+        .values({ customerId: id, merchantId })
+        .returning({ orderId: orders.id });
+
+      const { orderId } = insertOrder[0];
+
+      //add the [orderId] to the list
+      listCleaned.forEach(n => (n.orderId = orderId));
+
+      return await tx.insert(orderedItems).values(listCleaned);
+    });
+
+    res.send({ status: "ok" });
+  }),
+);

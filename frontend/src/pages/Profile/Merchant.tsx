@@ -45,9 +45,9 @@ export default function MerchantProfile() {
 
   useEffect(() => {
     if (profileData) {
-      setValue("name", profileData.merchant.name || "");
-      setValue("address", profileData.merchant.address || "");
-      setTypeId("" + profileData.merchant.type);
+      setValue("name", profileData.merchant?.name || "");
+      setValue("address", profileData.merchant?.address || "");
+      setTypeId("" + profileData.merchant?.type);
     }
   }, [profileData]);
 

@@ -38,7 +38,7 @@ type Props = PropsWithChildren & {
 
 const limit = 15;
 
-const intl = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 });
+const intl = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 
 export default function DataTable({ loading, data }: Props) {
   const merchantId = useProfileStore(s => s.id);

@@ -45,13 +45,7 @@ export default function Register() {
   };
 
   return (
-    <main
-      className="grow p-4 flex flex-col"
-      style={{
-        background:
-          "url(https://picsum.photos/id/866/1024/768) center/cover no-repeat",
-      }}
-    >
+    <main className="grow p-4 flex flex-col bg-stone-100">
       <div className="grow"></div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card className="p-2 max-w-sm w-full mx-auto">

@@ -2,6 +2,7 @@ import "./main.css";
 import { useRef, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../header/Header";
+import Footer from "../Footer";
 
 const ANIM1 = {
   animation: "layout-anim1 0.3s ease-in-out",
@@ -33,6 +34,7 @@ export default function Layout() {
       >
         <Header />
         <Outlet />
+        <Footer />
       </div>
     </>
   );
