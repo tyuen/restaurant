@@ -13,6 +13,7 @@ import { MenuIcon } from "lucide-react";
 const links = [
   { to: "/", label: "Home" },
   { to: "/orders", label: "Orders" },
+  { to: "/favorites", label: "Favorites" },
   { to: "/profile", label: "Profile" },
 ];
 

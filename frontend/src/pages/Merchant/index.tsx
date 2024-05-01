@@ -1,17 +1,22 @@
 import { Navigate, useParams } from "react-router-dom";
 import ky from "@/providers/ky";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import DataTable from "./DataTable";
+import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
-import { EarthIcon } from "lucide-react";
+import { EarthIcon, HeartIcon } from "lucide-react";
 
-import type { TProduct } from "./types";
+type SubmitFavorite = {
+  merchantId: number;
+  state: boolean;
+};
 
 // const limit = 1000;
 
 export default function Products() {
-  const { id: merchantId } = useParams();
+  const { id } = useParams();
+  const merchantId = Number(id || "-1");
 
   const merchant = useQuery({
     queryKey: ["merchant", merchantId],
@@ -20,6 +25,28 @@ export default function Products() {
     enabled: merchantId >= 0,
   });
 
+  const favorite = useQuery({
+    queryKey: ["favorite", merchantId],
+    queryFn: () =>
+      ky.post("/api/favorite/check-merchant", { json: { merchantId } }).json(),
+    enabled: merchantId >= 0,
+  });
+
+  const client = useQueryClient();
+
+  const favoriteAction = useMutation<any, any, SubmitFavorite>({
+    mutationFn: json => ky.post("/api/favorite/set-merchant", { json }).json(),
+    onSettled() {
+      client.invalidateQueries({ queryKey: ["favorite"] });
+    },
+  });
+  const toggleFavorite = () => {
+    favoriteAction.mutate({
+      merchantId,
+      state: !!favorite.data?.isEmpty,
+    });
+  };
+
   if (!(merchantId > 0)) return <Navigate to="/" />;
 
   return (
@@ -27,7 +54,25 @@ export default function Products() {
       <section className="flex gap-4 my-4 items-center">
         <EarthIcon className="w-20 h-20 p-1 bg-muted text-muted-foreground rounded-md" />
         <div>
-          <h1 className="text-3xl font-bold">{merchant.data?.name ?? "-"}</h1>
+          <h1 className="text-3xl font-bold flex gap-1 items-center">
+            {merchant.data?.name ?? "-"}
+            {favorite.isPending ? (
+              <Spinner className="ml-3" />
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleFavorite}
+                disabled={favoriteAction.isPending}
+              >
+                {favorite.data?.isEmpty ? (
+                  <HeartIcon className="text-muted-foreground/30" />
+                ) : (
+                  <HeartIcon className="text-red-500 fill-red-500" />
+                )}
+              </Button>
+            )}
+          </h1>
           <div className="text-muted-foreground">
             {merchant.data?.address ?? "-"}
           </div>

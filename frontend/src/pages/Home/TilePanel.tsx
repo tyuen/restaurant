@@ -31,13 +31,13 @@ export default function TilePanel({ loading, items, className = "" }: Prop) {
           <Skeleton key={i} className="h-60" />
         ))}
     </div>
-  ) : !items.length ? (
+  ) : !items?.length ? (
     <div className="border border-muted text-muted-foreground py-16 sm:py-28 text-center">
       No items found.
     </div>
   ) : (
     <div className={cx(GRID, className)}>
-      {items.map(i => (
+      {items?.map(i => (
         <Tile key={i.id} item={i} />
       ))}
     </div>
