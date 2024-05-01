@@ -1,20 +1,5 @@
-import { useMemo, useState, type PropsWithChildren } from "react";
+import { useState, type PropsWithChildren } from "react";
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Popover,
   PopoverContent,
@@ -23,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import DataEditor from "./DataEditor";
 import { useProfileStore } from "@/providers/profile";
+import Spinner from "@/components/Spinner";
 
 type Item = {
   id: number;
@@ -45,98 +31,51 @@ export default function DataTable({ loading, data }: Props) {
 
   const [item, setItem] = useState<Item>();
 
-  const fillItem = id => {
-    const obj = data?.find(i => i.id === id);
-    if (obj) setItem(obj);
-  };
-
-  const columns: ColumnDef<Item>[] = useMemo(
-    () =>
-      [
-        {
-          accessorKey: "name",
-          header: "Name",
-        },
-        {
-          accessorKey: "price",
-          header: "Price",
-          cell: prop => intl.format(prop.getValue() as number),
-        },
-        {
-          accessorKey: "id",
-          header: "Edit",
-          cell: prop => (
-            <Popover
-              onOpenChange={isOpen => isOpen && fillItem(prop.getValue())}
-            >
-              <PopoverTrigger asChild>
-                <Button>Edit</Button>
-              </PopoverTrigger>
-              <PopoverContent side="bottom" align="end">
-                <DataEditor data={item ?? { merchantId }} />
-              </PopoverContent>
-            </Popover>
-          ),
-          size: 10,
-        },
-      ] satisfies ColumnDef<Item>[],
-    [data, merchantId, item],
-  );
-
-  const table = useReactTable({
-    data: data ?? [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
-    <Table>
-      <TableHeader>
-        {table.getHeaderGroups().map(group => (
-          <TableRow key={group.id}>
-            {group.headers.map(i => {
-              return (
-                <TableHead key={i.id}>
-                  {i.isPlaceholder
-                    ? null
-                    : flexRender(i.column.columnDef.header, i.getContext())}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        ))}
-      </TableHeader>
-      <TableBody>
+    <table className="w-full tbl-headered tbl-spacious tbl-narrow-end">
+      <thead>
+        <tr className="border-muted-foreground border-b text-muted-foreground text-sm">
+          <th>Name</th>
+          <th className="text-right">Price</th>
+          <th className="text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
         {loading ? (
-          <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              Loading...
-            </TableCell>
-          </TableRow>
-        ) : table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map(row => (
-            <TableRow
-              key={row.id}
-              data-state={row.getIsSelected() && "selected"}
-            >
-              {row.getVisibleCells().map(cell => (
-                <TableCell
-                  key={cell.id}
-                  style={{ width: cell.column.getSize() + "rem" }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))
+          <tr>
+            <td colSpan={3}>
+              <div className="my-12 sm:my-[20vh]">
+                <Spinner className="h-8 mx-auto border-foreground" />
+              </div>
+            </td>
+          </tr>
+        ) : !data?.length ? (
+          <tr>
+            <td colSpan={3}>
+              <div className="my-12 sm:my-20 text-center text-muted-foreground">
+                No items.
+              </div>
+            </td>
+          </tr>
         ) : (
-          <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              No records.
-            </TableCell>
-          </TableRow>
+          data?.map(item => (
+            <tr key={item.id}>
+              <td>{item.name}</td>
+              <td className="text-right">{intl.format(item.price)}</td>
+              <td className="text-right">
+                <Popover onOpenChange={isOpen => isOpen && setItem(item)}>
+                  <PopoverTrigger asChild>
+                    <Button>Edit</Button>
+                  </PopoverTrigger>
+                  <PopoverContent side="bottom" align="end">
+                    <DataEditor data={item ?? { merchantId }} />
+                  </PopoverContent>
+                </Popover>
+              </td>
+            </tr>
+          ))
         )}
-      </TableBody>
-    </Table>
+      </tbody>
+    </table>
   );
 }
