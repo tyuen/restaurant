@@ -29,7 +29,7 @@ router.post("/list", verifySession, (req: Request, res: Response) => {
         merchant: { with: { type: true } },
         items: {
           with: { product: true },
-          limit: 3,
+          limit: 1,
           orderBy: desc(merchantProducts.price),
         },
       },
