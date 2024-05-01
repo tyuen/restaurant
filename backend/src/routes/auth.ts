@@ -98,7 +98,7 @@ router.post(
 
 router.post("/me", verifySession, async (req: Request, res: Response) => {
   if (req.session) {
-    const { id, usr, role, exp } = req.session;
+    const { id, usr, role, exp } = req.session || {};
     res.send({ status: "ok", id, userName: usr, role, exp });
   } else {
     res.send({ status: "anon" });

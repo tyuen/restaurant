@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 
 import { sync } from "../utils";
 import { db, merchants, merchantTypes, merchantProducts } from "../drizzle";
-import { eq, and } from "drizzle-orm";
+import { eq, and, asc } from "drizzle-orm";
 import { verifySession } from "../middleware/sessionCookie";
 
 const router = Router();
@@ -20,6 +20,7 @@ router.post("/list", (req: Request, res: Response) => {
   db.query.merchantProducts
     .findMany({
       where: eq(merchantProducts.merchantId, merchantId),
+      orderBy: [asc(merchantProducts.name)],
       offset: offset ?? 0,
       limit: limit ?? 12,
     })

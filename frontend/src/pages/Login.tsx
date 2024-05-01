@@ -19,18 +19,16 @@ import { useProfileStore } from "@/providers/profile";
 export default function Login() {
   const { register, handleSubmit, formState } = useForm();
 
-  const store = useProfileStore();
+  const setProfile = useProfileStore(s => s.setProfile);
   const nav = useNavigate();
 
   const { error, isPending, data, mutate } = useMutation<
     Record<string, string>
   >({
     mutationFn: json => ky.post("/api/auth/login", { json }).json(),
-    onSettled: obj => {
-      if (obj && !obj.error) {
-        store.setProfile(obj);
-        nav("/");
-      }
+    onSuccess: obj => {
+      setProfile(obj);
+      nav("/");
     },
   });
 

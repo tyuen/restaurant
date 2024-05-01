@@ -18,6 +18,7 @@ const Register = lazySuspense(() => import("./pages/Register"));
 const Profile = lazySuspense(() => import("./pages/Profile"));
 const Merchant = lazySuspense(() => import("./pages/Merchant/index"));
 const Products = lazySuspense(() => import("./pages/Products/index"));
+const Orders = lazySuspense(() => import("./pages/Orders/index"));
 
 function AppRoutes() {
   return (
@@ -31,6 +32,7 @@ function AppRoutes() {
           <Route path="profile" element={<Profile />} />
           <Route path="shop/:id" element={<Merchant />} />
           <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} />
         </Route>
       </Routes>
     </Router>

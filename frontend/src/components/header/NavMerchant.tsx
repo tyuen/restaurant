@@ -4,9 +4,9 @@ import LogoutButton from "./LogoutButton";
 
 export default function NavMerchant() {
   return (
-    <>
+    <nav className="flex gap-2 justify-end items-center animate-zoom">
       <Button asChild variant="ghost">
-        <Link to="/products">Products</Link>
+        <Link to="/products">Your Products</Link>
       </Button>
 
       <Button asChild variant="ghost">
@@ -14,6 +14,6 @@ export default function NavMerchant() {
       </Button>
 
       <LogoutButton />
-    </>
+    </nav>
   );
 }

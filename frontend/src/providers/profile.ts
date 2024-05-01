@@ -6,8 +6,9 @@ type Profile = {
   id: number;
   userName: string;
   role: string;
+
   setLoading: (b: boolean) => void;
-  setProfile: (o: { id: number; userName: string; role: string }) => void;
+  setProfile: (o: { id?: number; userName?: string; role?: string }) => void;
 };
 
 export const useProfileStore = create<Profile>(set => ({

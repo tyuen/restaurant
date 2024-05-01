@@ -21,7 +21,7 @@ export default function Register() {
 
   const { register, handleSubmit, formState, watch } = useForm();
 
-  const store = useProfileStore();
+  const setProfile = useProfileStore(s => s.setProfile);
   const nav = useNavigate();
 
   const pwdMatch = watch(["password", "password2"]);
@@ -30,11 +30,9 @@ export default function Register() {
     Record<string, string>
   >({
     mutationFn: json => ky.post("/api/auth/register", { json }).json(),
-    onSettled: obj => {
-      if (obj && !obj.error) {
-        store.setProfile(obj);
-        nav("/");
-      }
+    onSuccess: obj => {
+      setProfile(obj);
+      nav("/");
     },
   });
 

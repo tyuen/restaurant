@@ -1,4 +1,4 @@
-import { type PropsWithChildren } from "react";
+import { useMemo, useState, type PropsWithChildren } from "react";
 
 import {
   ColumnDef,
@@ -15,6 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import DataEditor from "./DataEditor";
+import { useProfileStore } from "@/providers/profile";
 
 type Item = {
   id: number;
@@ -30,22 +38,51 @@ type Props = PropsWithChildren & {
 
 const limit = 15;
 
-const columns: ColumnDef<Item>[] = [
-  {
-    accessorKey: "btns",
-    header: "-",
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "price",
-    header: "Price",
-  },
-];
+const intl = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 });
 
 export default function DataTable({ loading, data }: Props) {
+  const merchantId = useProfileStore(s => s.id);
+
+  const [item, setItem] = useState<Item>();
+
+  const fillItem = id => {
+    const obj = data?.find(i => i.id === id);
+    if (obj) setItem(obj);
+  };
+
+  const columns: ColumnDef<Item>[] = useMemo(
+    () =>
+      [
+        {
+          accessorKey: "name",
+          header: "Name",
+        },
+        {
+          accessorKey: "price",
+          header: "Price",
+          cell: prop => intl.format(prop.getValue() as number),
+        },
+        {
+          accessorKey: "id",
+          header: "Edit",
+          cell: prop => (
+            <Popover
+              onOpenChange={isOpen => isOpen && fillItem(prop.getValue())}
+            >
+              <PopoverTrigger asChild>
+                <Button>Edit</Button>
+              </PopoverTrigger>
+              <PopoverContent side="bottom" align="end">
+                <DataEditor data={item ?? { merchantId }} />
+              </PopoverContent>
+            </Popover>
+          ),
+          size: 10,
+        },
+      ] satisfies ColumnDef<Item>[],
+    [data, merchantId, item],
+  );
+
   const table = useReactTable({
     data: data ?? [],
     columns,
@@ -83,7 +120,10 @@ export default function DataTable({ loading, data }: Props) {
               data-state={row.getIsSelected() && "selected"}
             >
               {row.getVisibleCells().map(cell => (
-                <TableCell key={cell.id}>
+                <TableCell
+                  key={cell.id}
+                  style={{ width: cell.column.getSize() + "rem" }}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}

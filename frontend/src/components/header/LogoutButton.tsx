@@ -12,7 +12,7 @@ export default function LogoutButton() {
     mutationFn: userName =>
       ky.post("/api/auth/logout", { json: { userName } }).json(),
     onSettled: obj => {
-      if (obj?.status === "ok") setProfile("", "");
+      if (obj?.status === "ok") setProfile({ id: -1, userName: "", role: "" });
     },
   });
   const handle = e => mutate(userName);

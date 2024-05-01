@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import ky from "@/providers/ky";
 
 import TilePanel from "./TilePanel";
+import Heading from "@/components/Heading";
 
 const limit = 12;
 
@@ -19,7 +20,7 @@ export default function Home() {
   return (
     <main>
       <section className="p-4 max-w-screen-xl mx-auto">
-        <h1 className="text-3xl border-b pb-3 font-bold my-6">Restaurants</h1>
+        <Heading text="Restaurants" />
         {error ? (
           <div className="text-center py-8">
             {error.message || error.toString()}

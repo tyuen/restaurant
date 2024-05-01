@@ -26,7 +26,7 @@ router.post(
         password: false,
       },
     });
-    res.send(match);
+    res.send(match || { status: "ok", isEmpty: true });
   }),
 );
 

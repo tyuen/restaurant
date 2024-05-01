@@ -5,6 +5,7 @@ import ky from "@/providers/ky";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Spinner from "@/components/Spinner";
 
 type Item = {
   id?: number;
@@ -18,10 +19,18 @@ type Props = PropsWithChildren & {
   onDone?: () => void;
 };
 
-export default function DataEditor({ data, onDone }: Props) {
-  const { register, handleSubmit, formState, reset } = useForm();
+const intl = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 });
 
-  useEffect(() => reset(), [data]);
+export default function DataEditor({ data, onDone }: Props) {
+  const { register, handleSubmit, formState, reset, setValue } = useForm();
+
+  useEffect(() => {
+    reset();
+    if (data) {
+      setValue("name", data.name);
+      setValue("price", intl.format(1 * (data.price ?? 0)));
+    }
+  }, [data]);
 
   const client = useQueryClient();
 
@@ -57,6 +66,7 @@ export default function DataEditor({ data, onDone }: Props) {
         placeholder="Name"
         className="w-full"
         disabled={off}
+        autoFocus
         {...register("name", {
           required: true,
           minLength: 1,
@@ -73,7 +83,7 @@ export default function DataEditor({ data, onDone }: Props) {
           pattern: /^[\d.,\s]+$/,
         })}
       />
-      <div className="flex justify-between gap-2 mt-2">
+      <div className="flex justify-between items-center gap-2 mt-2">
         <Button
           type="button"
           size="sm"
@@ -83,6 +93,7 @@ export default function DataEditor({ data, onDone }: Props) {
         >
           Delete
         </Button>
+        {off ? <Spinner /> : null}
         <Button type="submit" size="sm" disabled={off || !formState.isDirty}>
           Save
         </Button>

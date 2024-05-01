@@ -10,7 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-// import DataEditor from "./DataEditor";
+import Heading from "@/components/Heading";
 import DataTable from "./DataTable";
 import DataEditor from "./DataEditor";
 
@@ -21,7 +21,7 @@ type Item = {
   price: number;
 };
 
-const limit = 15;
+const limit = 1000;
 
 export default function Products() {
   const [offset, setOffset] = useState(0);
@@ -41,7 +41,7 @@ export default function Products() {
 
   return (
     <main className="max-w-screen-lg w-full mx-auto p-2">
-      <div className="flex justify-end">
+      <Heading text="Your Products" className="mb-4">
         <Popover onOpenChange={isOpen => isOpen && setItem({ merchantId })}>
           <PopoverTrigger asChild>
             <Button>Add Product</Button>
@@ -50,7 +50,7 @@ export default function Products() {
             <DataEditor data={item} />
           </PopoverContent>
         </Popover>
-      </div>
+      </Heading>
 
       <DataTable loading={isPending} data={data?.list} />
     </main>

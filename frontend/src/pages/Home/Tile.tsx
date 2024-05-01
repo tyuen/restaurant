@@ -20,7 +20,7 @@ type Prop = PropsWithChildren & {
 export default function Tile({ item, className = "" }: Prop) {
   return (
     <Link
-      to={"/merchant/" + item.id}
+      to={"/shop/" + item.id}
       className={cn(
         "flex flex-col items-stretch hover:bg-muted h-60 sm:h-72 border border-muted-foreground rounded-lg",
         className,
@@ -32,7 +32,7 @@ export default function Tile({ item, className = "" }: Prop) {
       />
       <div className="p-2 sm:px-4">
         <div className="text-lg font-bold">{item.name}</div>
-        <div className="text-xs text-muted-foreground">{item.type?.type}</div>
+        <div className="text-sm text-muted-foreground">{item.type?.type}</div>
       </div>
     </Link>
   );

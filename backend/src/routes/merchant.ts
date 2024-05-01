@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 
 import { sync } from "../utils";
 import { db, merchants, users, merchantTypes } from "../drizzle";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { verifySession } from "../middleware/sessionCookie";
 
 const router = Router();
@@ -16,7 +16,7 @@ router.post(
     const { usr: userName, role } = req.session || {};
 
     if (role !== "merchant") {
-      res.status(400).send({ error: "Invald role" });
+      res.status(400).send({ error: "Invalid role" });
       return;
     }
 
@@ -27,7 +27,7 @@ router.post(
         password: false,
       },
     });
-    res.send(match);
+    res.send(match || { status: "ok", isEmpty: true });
   }),
 );
 
@@ -84,14 +84,18 @@ router.post(
 );
 
 router.get("/all-types", (req: Request, res: Response) => {
-  db.query.merchantTypes.findMany().then(
-    list => {
-      res.set("cache-control", "max-age=30").send({ list });
-    },
-    err => {
-      res.status(400).send({ error: err?.message || err.toString() });
-    },
-  );
+  db.query.merchantTypes
+    .findMany({
+      orderBy: [asc(merchantTypes.type)],
+    })
+    .then(
+      list => {
+        res.set("cache-control", "max-age=30").send({ list });
+      },
+      err => {
+        res.status(400).send({ error: err?.message || err.toString() });
+      },
+    );
 });
 
 router.post("/list", (req: Request, res: Response) => {
@@ -99,12 +103,30 @@ router.post("/list", (req: Request, res: Response) => {
   db.query.merchants
     .findMany({
       with: { type: true },
+      orderBy: [asc(merchants.name)],
       offset: offset ?? 0,
       limit: limit ?? 12,
     })
     .then(
       list => {
         res.send({ list });
+      },
+      err => {
+        res.status(400).send({ error: err?.message || err.toString() });
+      },
+    );
+});
+
+router.post("/get", (req: Request, res: Response) => {
+  const { id } = req.body;
+  db.query.merchants
+    .findFirst({
+      where: eq(merchants.id, id),
+      with: { type: true },
+    })
+    .then(
+      obj => {
+        res.send(obj || { status: "ok", isEmpty: true });
       },
       err => {
         res.status(400).send({ error: err?.message || err.toString() });
