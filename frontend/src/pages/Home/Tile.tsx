@@ -22,7 +22,7 @@ export default function Tile({ item, className = "" }: Prop) {
     <Link
       to={"/merchant/" + item.id}
       className={cn(
-        "flex flex-col items-stretch hover:bg-muted h-60 sm:h-72 border border-muted-foreground rounded-lg",
+        "flex flex-col items-stretch hover:bg-muted h-60 sm:h-72 border border-muted-foreground/50 rounded-lg",
         className,
       )}
     >

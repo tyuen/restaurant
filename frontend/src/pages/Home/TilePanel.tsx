@@ -19,19 +19,27 @@ type Prop = PropsWithChildren & {
   items: Item[];
 };
 
+const GRID =
+  "grid grid-cols-1 sm:grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4 min-h-[50vh]";
+
 export default function TilePanel({ loading, items, className = "" }: Prop) {
-  return (
-    <div
-      className={cx(
-        "grid grid-cols-1 sm:grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4",
-        className,
-      )}
-    >
-      {loading
-        ? Array(12)
-            .fill(null)
-            .map((_, i) => <Skeleton key={i} className="h-60" />)
-        : items.map(i => <Tile key={i.id} item={i} />)}
+  return loading ? (
+    <div className={cx(GRID, className)}>
+      {Array(12)
+        .fill(null)
+        .map((_, i) => (
+          <Skeleton key={i} className="h-60" />
+        ))}
+    </div>
+  ) : !items.length ? (
+    <div className="border border-muted text-muted-foreground py-16 sm:py-28 text-center">
+      No items found.
+    </div>
+  ) : (
+    <div className={cx(GRID, className)}>
+      {items.map(i => (
+        <Tile key={i.id} item={i} />
+      ))}
     </div>
   );
 }

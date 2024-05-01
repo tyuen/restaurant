@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 
 import { sync } from "../utils";
 import { db, merchants, users, merchantTypes } from "../drizzle";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { verifySession } from "../middleware/sessionCookie";
 
 const router = Router();
@@ -102,6 +102,7 @@ router.post("/list", (req: Request, res: Response) => {
   const { offset, limit, type } = req.body;
   db.query.merchants
     .findMany({
+      where: type ? eq(merchants.type, type) : sql`1=1`,
       with: { type: true },
       orderBy: [asc(merchants.name)],
       offset: offset ?? 0,
