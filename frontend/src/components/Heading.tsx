@@ -13,11 +13,11 @@ export default function Heading({
   return (
     <h1
       className={twMerge(
-        "text-3xl border-b pb-3 font-bold my-6 flex gap-1 justify-between",
+        "text-3xl border-b pb-3 font-bold my-6 px-2 flex flex-col sm:flex-row items-end sm:items-center gap-1 justify-between",
         className,
       )}
     >
-      <div>{text}</div>
+      <div className="self-start">{text}</div>
       {children}
     </h1>
   );

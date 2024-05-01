@@ -4,7 +4,7 @@ import ky from "@/providers/ky";
 
 import { Button } from "../ui/button";
 
-export default function LogoutButton() {
+export default function LogoutButton({ className = "" }) {
   const userName = useProfileStore(s => s.userName);
   const setProfile = useProfileStore(s => s.setProfile);
 
@@ -17,7 +17,12 @@ export default function LogoutButton() {
   });
   const handle = e => mutate(userName);
   return (
-    <Button variant="outline" disabled={isPending} onClick={handle}>
+    <Button
+      variant="outline"
+      disabled={isPending}
+      onClick={handle}
+      className={className}
+    >
       Logout
     </Button>
   );

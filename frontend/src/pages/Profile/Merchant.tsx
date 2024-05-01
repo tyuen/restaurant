@@ -61,8 +61,7 @@ export default function MerchantProfile() {
   const mutation = useMutation<Record<string, string>>({
     mutationFn: json => ky.post("/api/merchant/set-profile", { json }).json(),
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["merchProfile"] });
-      queryClient.invalidateQueries({ queryKey: ["allMerchTypes"] });
+      queryClient.invalidateQueries();
       nav("/");
     },
   });
