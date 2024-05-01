@@ -57,7 +57,7 @@ export default function Products() {
           </div>
         ) : (
           orders.data?.list?.map(item => (
-            <OrderPanel key={item.id} order={item} />
+            <OrderPanel key={item.id} order={item} className="mb-10" />
           ))
         )}
       </section>

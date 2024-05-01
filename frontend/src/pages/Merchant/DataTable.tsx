@@ -3,6 +3,7 @@ import ky from "@/providers/ky";
 import { useMap } from "ahooks";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useProfileStore } from "@/providers/profile";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 
@@ -10,7 +11,6 @@ import Spinner from "@/components/Spinner";
 import NumInput from "@/components/NumInput";
 
 import type { TProduct } from "./types";
-import { useNavigate } from "react-router-dom";
 
 type Props = PropsWithChildren & {
   merchantId: number;
@@ -46,8 +46,8 @@ export default function DataTable({ merchantId }: Props) {
   const orderAction = useMutation<any, any, SubmitOrders>({
     mutationFn: json => ky.post("/api/order/add", { json }).json(),
     onSuccess(res) {
-      console.log(res);
       client.invalidateQueries({ queryKey: ["orders"] });
+      client.invalidateQueries({ queryKey: ["orders-latest"] });
       nav("/orders");
     },
   });
@@ -88,7 +88,7 @@ export default function DataTable({ merchantId }: Props) {
             </tr>
           ) : (
             products.data?.list?.map(item => (
-              <tr key={item.id}>
+              <tr key={item.id} className="odd:bg-muted">
                 <td>{item.name}</td>
                 <td className="text-right">{intl.format(item.price)}</td>
                 <td>

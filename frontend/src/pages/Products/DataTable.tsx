@@ -59,7 +59,7 @@ export default function DataTable({ loading, data }: Props) {
           </tr>
         ) : (
           data?.map(item => (
-            <tr key={item.id}>
+            <tr key={item.id} className="odd:bg-muted">
               <td>{item.name}</td>
               <td className="text-right">{intl.format(item.price)}</td>
               <td className="text-right">

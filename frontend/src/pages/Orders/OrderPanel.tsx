@@ -10,9 +10,13 @@ type Props = PropsWithChildren & {
 
 const intl = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 
-export default function OrderPanel({ order, showTotal = false }: Props) {
+export default function OrderPanel({
+  order,
+  showTotal = false,
+  className = "",
+}: Props) {
   return (
-    <div>
+    <div className={className}>
       <div className="my-2 px-2 sm:flex justify-between">
         <div>
           <div className="text-lg font-bold">
@@ -28,15 +32,15 @@ export default function OrderPanel({ order, showTotal = false }: Props) {
       </div>
       <table className="w-full tbl-headered tbl-spacious tbl-narrow-end">
         <thead>
-          <tr className="border-muted-foreground border-b text-muted-foreground text-sm">
-            <th className="py-3">Name</th>
-            <th className="py-3 text-right">Price</th>
-            <th className="py-3 text-right">Quantity</th>
+          <tr className="border-muted-foreground border-b text-muted-foreground text-sm [&>*]:py-3">
+            <th>Name</th>
+            <th className="text-right">Price</th>
+            <th className="text-right">Quantity</th>
           </tr>
         </thead>
         <tbody>
           {order.items?.length === 0 ? (
-            <tr>
+            <tr key="empty">
               <td colSpan={3}>
                 <div className="my-12 sm:my-20 text-center text-muted-foreground">
                   No items.
@@ -45,7 +49,7 @@ export default function OrderPanel({ order, showTotal = false }: Props) {
             </tr>
           ) : (
             order.items?.map(item => (
-              <tr key={item.id}>
+              <tr key={item.id} className="odd:bg-muted">
                 <td>{item.product?.name}</td>
                 <td className="text-right">{intl.format(item.price)}</td>
                 <td>{item.quantity}</td>
@@ -58,7 +62,12 @@ export default function OrderPanel({ order, showTotal = false }: Props) {
             <tr className="border-muted-foreground border-t">
               <th className="py-3">Total</th>
               <th className="py-3 text-right">
-                {order.items?.reduce((sum, i) => sum + i.price * i.quantity, 0)}
+                {intl.format(
+                  order.items?.reduce(
+                    (sum, i) => sum + i.price * i.quantity,
+                    0,
+                  ) || 0,
+                )}
               </th>
               <th className="py-3 text-right">{order.items?.length}</th>
             </tr>
