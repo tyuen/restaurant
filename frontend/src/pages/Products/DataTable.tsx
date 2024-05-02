@@ -1,4 +1,4 @@
-import { useState, type PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 
 import {
   Popover,
@@ -22,14 +22,10 @@ type Props = PropsWithChildren & {
   data?: Item[];
 };
 
-const limit = 15;
-
 const intl = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 
 export default function DataTable({ loading, data }: Props) {
   const merchantId = useProfileStore(s => s.id);
-
-  const [item, setItem] = useState<Item>();
 
   return (
     <table className="w-full tbl-headered tbl-spacious tbl-narrow-end">
@@ -63,7 +59,7 @@ export default function DataTable({ loading, data }: Props) {
               <td>{item.name}</td>
               <td className="text-right">{intl.format(item.price)}</td>
               <td className="text-right">
-                <Popover onOpenChange={isOpen => isOpen && setItem(item)}>
+                <Popover>
                   <PopoverTrigger asChild>
                     <Button>Edit</Button>
                   </PopoverTrigger>

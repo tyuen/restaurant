@@ -23,7 +23,7 @@ export default function CustomerProfile() {
     error,
     isPending,
     data: profileData,
-  } = useQuery({
+  } = useQuery<any>({
     queryKey: ["custProfile"],
     queryFn: () => ky.post("/api/customer/profile").json(),
   });
@@ -47,7 +47,7 @@ export default function CustomerProfile() {
     },
   });
 
-  const onSubmit = obj => {
+  const onSubmit = (obj: any) => {
     mutation.mutate(obj);
   };
 

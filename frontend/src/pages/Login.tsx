@@ -32,7 +32,7 @@ export default function Login() {
     },
   });
 
-  const onSubmit = obj => mutate(obj);
+  const onSubmit = (obj: any) => mutate(obj);
 
   return (
     <main className="grow p-4 flex flex-col bg-stone-100">

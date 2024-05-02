@@ -17,7 +17,7 @@ export default function Products() {
     queryFn: () => ky.post("/api/order/latest").json<TOrder>(),
   });
 
-  const [offset, setOffset] = useState(0);
+  const [offset, _setOffset] = useState(0);
 
   const orders = useQuery({
     queryKey: ["orders", offset],

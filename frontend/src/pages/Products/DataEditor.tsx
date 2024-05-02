@@ -15,13 +15,13 @@ type Item = {
 };
 
 type Props = PropsWithChildren & {
-  data: Item | null;
+  data: Partial<Item> | null;
   onDone?: () => void;
 };
 
 const intl = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 
-export default function DataEditor({ data, onDone }: Props) {
+export default function DataEditor({ data }: Props) {
   const { register, handleSubmit, formState, reset, setValue } = useForm();
 
   useEffect(() => {
@@ -34,21 +34,21 @@ export default function DataEditor({ data, onDone }: Props) {
 
   const client = useQueryClient();
 
-  const saveAction = useMutation({
+  const saveAction = useMutation<any>({
     mutationFn: json => ky.post("/api/product/save-item", { json }).json(),
     onSuccess() {
       client.invalidateQueries({ queryKey: ["products"] });
     },
   });
 
-  const delAction = useMutation({
+  const delAction = useMutation<any, any, any>({
     mutationFn: json => ky.post("/api/product/del-item", { json }).json(),
     onSuccess() {
       client.invalidateQueries({ queryKey: ["products"] });
     },
   });
 
-  const onSubmit = obj => {
+  const onSubmit = (obj: any) => {
     if (data)
       saveAction.mutate({ ...obj, id: data.id, merchantId: data.merchantId });
   };

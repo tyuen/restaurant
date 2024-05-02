@@ -38,7 +38,7 @@ export default function MerchantProfile() {
     error,
     isPending,
     data: profileData,
-  } = useQuery({
+  } = useQuery<any>({
     queryKey: ["merchProfile"],
     queryFn: () => ky.post("/api/merchant/profile").json(),
   });
@@ -66,7 +66,7 @@ export default function MerchantProfile() {
     },
   });
 
-  const onSubmit = obj => {
+  const onSubmit = (obj: any) => {
     mutation.mutate({ type: typeId, ...obj });
   };
 

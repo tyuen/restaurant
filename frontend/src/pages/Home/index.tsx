@@ -17,9 +17,9 @@ const limit = 12;
 
 export default function Home() {
   const [type, setType] = useState("");
-  const [offset, setOffset] = useState(0);
+  const [offset, _setOffset] = useState(0);
 
-  const { isPending, data, error } = useQuery({
+  const { isPending, data, error } = useQuery<any>({
     queryKey: ["merchants", type, offset],
     queryFn: () =>
       ky.post("/api/merchant/list", { json: { type, offset, limit } }).json(),

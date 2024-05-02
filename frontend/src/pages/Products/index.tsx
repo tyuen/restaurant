@@ -24,7 +24,7 @@ type Item = {
 const limit = 1000;
 
 export default function Products() {
-  const [offset, setOffset] = useState(0);
+  const [offset, _setOffset] = useState(0);
 
   const merchantId = useProfileStore(s => s.id);
 
@@ -51,6 +51,12 @@ export default function Products() {
           </PopoverContent>
         </Popover>
       </Heading>
+
+      {error ? (
+        <div className="text-destructive-foreground py-10 text-center">
+          {error.message ?? error.toString()}
+        </div>
+      ) : null}
 
       <DataTable loading={isPending} data={data?.list} />
     </main>

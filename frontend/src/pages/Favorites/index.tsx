@@ -5,7 +5,7 @@ import Heading from "@/components/Heading";
 import TilePanel from "../Home/TilePanel";
 
 export default function Home() {
-  const { isPending, data, error } = useQuery({
+  const { isPending, data, error } = useQuery<any>({
     queryKey: ["favorite"],
     queryFn: () => ky.post("/api/favorite/list").json(),
   });

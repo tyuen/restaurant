@@ -36,7 +36,7 @@ export default function Register() {
     },
   });
 
-  const onSubmit = obj => {
+  const onSubmit = (obj: any) => {
     if (role === "merchant") {
       mutate({ ...obj, role: "merchant" });
     } else {

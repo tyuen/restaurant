@@ -11,7 +11,7 @@ export default function LogoutButton({ className = "" }) {
   const userName = useProfileStore(s => s.userName);
   const setProfile = useProfileStore(s => s.setProfile);
 
-  const { isPending, mutate } = useMutation<Record<string, string>>({
+  const { isPending, mutate } = useMutation<any, any, string>({
     mutationFn: userName =>
       ky.post("/api/auth/logout", { json: { userName } }).json(),
     onSettled: obj => {
@@ -21,12 +21,12 @@ export default function LogoutButton({ className = "" }) {
       }
     },
   });
-  const handle = e => mutate(userName);
+
   return (
     <Button
       variant="outline"
       disabled={isPending}
-      onClick={handle}
+      onClick={() => mutate(userName)}
       className={className}
     >
       Logout

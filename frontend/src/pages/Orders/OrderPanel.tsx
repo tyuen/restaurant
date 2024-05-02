@@ -20,7 +20,7 @@ export default function OrderPanel({
       <div className="my-2 px-2 sm:flex justify-between">
         <div>
           <div className="text-lg font-bold">
-            <Link to={"/merchant/" + order.id} className="underline">
+            <Link to={"/merchant/" + order.merchant?.id} className="underline">
               {order.merchant?.name}
             </Link>
           </div>

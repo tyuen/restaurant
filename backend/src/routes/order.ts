@@ -77,7 +77,10 @@ router.post("/latest", verifySession, (req: Request, res: Response) => {
     );
 });
 
-type OrderParams = { merchantId: number; list: { id: number; qty: number }[] };
+type OrderParams = {
+  merchantId: number;
+  list: { id: number; qty: number | string }[];
+};
 
 router.post(
   "/add",
@@ -95,6 +98,11 @@ router.post(
       return;
     }
 
+    if (list.length <= 0) {
+      res.status(400).send({ error: "Input is empty" });
+      return;
+    }
+
     //get the prices of all products
     const priceMap = new Map<number, string>();
     const catalog = await db.query.merchantProducts.findMany({
@@ -107,7 +115,7 @@ router.post(
     const listCleaned = list.map(n => ({
       orderId: -1,
       productId: n.id,
-      quantity: n.qty,
+      quantity: Number(n.qty),
       price: priceMap.get(n.id)!,
     }));
 

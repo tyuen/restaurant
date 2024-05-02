@@ -7,6 +7,8 @@ import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { EarthIcon, HeartIcon } from "lucide-react";
 
+import type { TMerchant } from "./types";
+
 type SubmitFavorite = {
   merchantId: number;
   state: boolean;
@@ -18,14 +20,14 @@ export default function Products() {
   const { id } = useParams();
   const merchantId = Number(id || "-1");
 
-  const merchant = useQuery({
+  const merchant = useQuery<any, any, TMerchant>({
     queryKey: ["merchant", merchantId],
     queryFn: () =>
       ky.post("/api/merchant/get", { json: { id: merchantId } }).json(),
     enabled: merchantId >= 0,
   });
 
-  const favorite = useQuery({
+  const favorite = useQuery<any>({
     queryKey: ["favorite", merchantId],
     queryFn: () =>
       ky.post("/api/favorite/check-merchant", { json: { merchantId } }).json(),

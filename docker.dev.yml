@@ -3,12 +3,12 @@ services:
   sslproxy:
     image: nginx:stable-alpine
     ports:
-      - 3001:3001
+      - 3001:443
     restart: unless-stopped
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/localhost.pem:/etc/nginx/cert/mycert.pem:ro
-      - ./nginx/localhost-key.pem:/etc/nginx/cert/mycert-key.pem:ro
+      - ./nginx/localhost.pem:/etc/nginx/cert/localhost.pem:ro
+      - ./nginx/localhost-key.pem:/etc/nginx/cert/localhost-key.pem:ro
 
   frontend:
     image: node:21-alpine
@@ -18,8 +18,8 @@ services:
     working_dir: /home/node/app
     command: sh -c "npm run dev"
     restart: unless-stopped
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3000:3000
     volumes:
       - ./frontend:/home/node/app
       - ./.env:/home/node/app/.env:ro
@@ -35,8 +35,8 @@ services:
     working_dir: /home/node/app
     command: sh -c "npm run dev"
     restart: unless-stopped
-    ports:
-      - 4000:4000
+    # ports:
+    #   - 4000:4000
     volumes:
       - ./backend:/home/node/app
       - ./.env:/home/node/app/.env:ro
@@ -48,8 +48,8 @@ services:
     volumes:
       - ./postgres:/var/lib/postgresql/data
     restart: unless-stopped
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

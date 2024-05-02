@@ -45,7 +45,7 @@ export default function DataTable({ merchantId }: Props) {
 
   const orderAction = useMutation<any, any, SubmitOrders>({
     mutationFn: json => ky.post("/api/order/add", { json }).json(),
-    onSuccess(res) {
+    onSuccess() {
       client.invalidateQueries({ queryKey: ["orders"] });
       client.invalidateQueries({ queryKey: ["orders-latest"] });
       nav("/orders");
@@ -94,7 +94,11 @@ export default function DataTable({ merchantId }: Props) {
                 <td>
                   <NumInput
                     value={quantity.get(item.id) || "0"}
-                    setValue={num => quantity.set(item.id, num)}
+                    setValue={num =>
+                      parseFloat(num) <= 0
+                        ? quantity.remove(item.id)
+                        : quantity.set(item.id, num)
+                    }
                     disabled={role !== "customer"}
                   />
                 </td>
@@ -108,7 +112,11 @@ export default function DataTable({ merchantId }: Props) {
         <div className="font-bold text-xl">
           Total: {intl.format(total ?? 0)}
         </div>
-        <Button size="lg" disabled={role !== "customer"} onClick={onSubmit}>
+        <Button
+          size="lg"
+          disabled={qtyMap.size <= 0 || role !== "customer"}
+          onClick={onSubmit}
+        >
           Order
         </Button>
       </div>
