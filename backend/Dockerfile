@@ -6,8 +6,10 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package*.json yarn.lock* ./
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
+  if [ -f yarn.lock ]; then \
+  yarn --frozen-lockfile --production && \
+  cp -R node_modules prod_node_modules && \
+  yarn --frozen-lockfile --production=false; \
   else echo "Lockfile not found." && exit 1; \
   fi
 COPY  . .
@@ -18,7 +20,7 @@ FROM ${NODE} AS runner
 ENV NODE_ENV production
 
 WORKDIR /app
-COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --from=deps --chown=node:node /app/prod_node_modules ./node_modules
 COPY --from=deps --chown=node:node /app/dist ./dist
 COPY --from=deps --chown=node:node /app/package*.json /app/yarn.lock*  ./
 
