@@ -5,6 +5,7 @@ import { verifySession } from "../middleware/sessionCookie";
 import { sync } from "../utils";
 import { db, users } from "../drizzle";
 import { eq } from "drizzle-orm";
+import bcrypt from "bcrypt";
 
 const router = Router();
 export default router;
@@ -22,8 +23,11 @@ router.post(
       where: eq(users.userName, inp.userName),
     });
 
-    //use simple comparison for demo
-    if (match && match.password === inp.password) {
+    if (
+      match &&
+      (match.password === inp.password ||
+        (await bcrypt.compare(inp.password, match.password)))
+    ) {
       const exp = Math.ceil(Date.now() / 1000) + 4 * 24 * 60 * 60;
       const { id, userName, role } = match;
       req.session = {
@@ -69,10 +73,12 @@ router.post(
 
     if (match) return res.status(400).send({ error: "taken" });
 
-    //simply assign password for demo purposes
+    const SALT_ROUNDS = 10;
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
     const record = await db
       .insert(users)
-      .values({ userName, password, role })
+      .values({ userName, password: hashedPassword, role })
       .returning();
 
     const id = record[0].id;

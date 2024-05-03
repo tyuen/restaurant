@@ -31,8 +31,10 @@ export default function Register() {
   >({
     mutationFn: json => ky.post("/api/auth/register", { json }).json(),
     onSuccess: obj => {
-      setProfile(obj);
-      nav("/");
+      if (!obj.error) {
+        setProfile(obj);
+        nav("/");
+      }
     },
   });
 

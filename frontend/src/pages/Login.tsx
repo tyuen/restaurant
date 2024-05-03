@@ -27,8 +27,10 @@ export default function Login() {
   >({
     mutationFn: json => ky.post("/api/auth/login", { json }).json(),
     onSuccess: obj => {
-      setProfile(obj);
-      nav("/");
+      if (!obj.error) {
+        setProfile(obj);
+        nav("/");
+      }
     },
   });
 
