@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 
 import { verifySession } from "../middleware/sessionCookie";
 import { sync } from "../utils";
-import { db, users } from "../drizzle";
+import { customers, db, merchants, users } from "../drizzle";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
@@ -80,6 +80,13 @@ router.post(
       .insert(users)
       .values({ userName, password: hashedPassword, role })
       .returning();
+
+    //create empty profiles so the user can add favorites
+    if (role === "customer") {
+      await db.insert(customers).values({ id: record[0].id });
+    } else if (role === "merchant") {
+      await db.insert(merchants).values({ id: record[0].id });
+    }
 
     const id = record[0].id;
     const exp = Math.ceil(Date.now() / 1000) + 4 * 24 * 60 * 60;
