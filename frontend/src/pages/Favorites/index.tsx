@@ -5,7 +5,7 @@ import Heading from "@/components/Heading";
 import TilePanel from "../Home/TilePanel";
 
 export default function Home() {
-  const { isPending, data, error } = useQuery<any>({
+  const { isPending, data } = useQuery<any>({
     queryKey: ["favorite"],
     queryFn: () => ky.post("/api/favorite/list").json(),
   });
@@ -14,9 +14,9 @@ export default function Home() {
     <main>
       <section className="p-4 max-w-screen-xl mx-auto">
         <Heading text="Favorites" />
-        {error ? (
+        {data?.error ? (
           <div className="text-center py-8">
-            {error.message || error.toString()}
+            {data?.error?.message || data?.error.toString()}
           </div>
         ) : (
           <TilePanel loading={isPending} items={data?.list} />

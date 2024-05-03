@@ -31,8 +31,12 @@ export default function Tile({ item, className = "" }: Prop) {
         className="object-cover flex-1 min-h-0 rounded-t-lg"
       />
       <div className="p-2 sm:px-4">
-        <div className="text-lg font-bold">{item.name}</div>
-        <div className="text-sm text-muted-foreground">{item.type?.type}</div>
+        <div className="text-lg font-bold">
+          {item.name ?? <span className="text-muted">Untitled</span>}
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {item.type?.type ?? <span className="text-muted">None</span>}
+        </div>
       </div>
     </Link>
   );

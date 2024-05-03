@@ -22,9 +22,7 @@ export default function Login() {
   const setProfile = useProfileStore(s => s.setProfile);
   const nav = useNavigate();
 
-  const { error, isPending, data, mutate } = useMutation<
-    Record<string, string>
-  >({
+  const { isPending, data, mutate } = useMutation<Record<string, string>>({
     mutationFn: json => ky.post("/api/auth/login", { json }).json(),
     onSuccess: obj => {
       if (!obj.error) {
@@ -51,6 +49,7 @@ export default function Login() {
             <Input
               placeholder="Username"
               className="w-full"
+              autoCorrect="off"
               autoFocus
               disabled={isPending}
               {...register("userName", {
@@ -77,9 +76,11 @@ export default function Login() {
                 Password must be at least 8 characters
               </div>
             )}
-            {data?.error === "mismatch" ? (
+            {data?.error ? (
               <div className="error-icon bg-destructive text-destructive-foreground p-2 text-sm rounded animate-zoom">
-                Incorrect username or password
+                {data?.error === "mismatch"
+                  ? "Incorrect username or password"
+                  : data?.error}
               </div>
             ) : null}
           </CardContent>
@@ -87,11 +88,7 @@ export default function Login() {
             <Button type="submit" disabled={isPending}>
               Login
             </Button>
-            {error ? (
-              <div className="error-icon bg-destructive text-destructive-foreground p-2 mt-2 text-sm rounded animate-zoom">
-                {error.message}
-              </div>
-            ) : null}
+
             <Button variant="outline" asChild>
               <Link to="/register" className="mt-8">
                 Register a new Account

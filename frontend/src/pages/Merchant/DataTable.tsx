@@ -45,10 +45,12 @@ export default function DataTable({ merchantId }: Props) {
 
   const orderAction = useMutation<any, any, SubmitOrders>({
     mutationFn: json => ky.post("/api/order/add", { json }).json(),
-    onSuccess() {
-      client.invalidateQueries({ queryKey: ["orders"] });
-      client.invalidateQueries({ queryKey: ["orders-latest"] });
-      nav("/orders");
+    onSuccess(obj) {
+      if (!obj.error) {
+        client.invalidateQueries({ queryKey: ["orders"] });
+        client.invalidateQueries({ queryKey: ["orders-latest"] });
+        nav("/orders");
+      }
     },
   });
 
@@ -107,6 +109,12 @@ export default function DataTable({ merchantId }: Props) {
           )}
         </tbody>
       </table>
+
+      {orderAction.data?.error ? (
+        <div className="error-icon bg-destructive text-destructive-foreground p-2 text-sm rounded animate-zoom">
+          orderAction.data?.error
+        </div>
+      ) : null}
 
       <div className="flex justify-end gap-2 md:gap-6 items-center px-2 md:px-4 bg-background border-foreground border-t py-4 md:py-6 sticky bottom-0">
         <div className="font-bold text-xl">

@@ -39,11 +39,13 @@ export default function CustomerProfile() {
   const nav = useNavigate();
 
   //save new merchant profile
-  const mutation = useMutation<Record<string, string>>({
+  const mutation = useMutation<Record<string, string>, any, any>({
     mutationFn: json => ky.post("/api/customer/set-profile", { json }).json(),
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["custProfile"] });
-      nav("/");
+    onSuccess(obj) {
+      if (!obj.error) {
+        queryClient.invalidateQueries({ queryKey: ["custProfile"] });
+        nav("/");
+      }
     },
   });
 
@@ -96,6 +98,11 @@ export default function CustomerProfile() {
             {error ? (
               <div className="error-icon bg-destructive text-destructive-foreground p-2 mt-2 text-sm rounded animate-zoom">
                 {error.message}
+              </div>
+            ) : null}
+            {mutation.data?.error ? (
+              <div className="error-icon bg-destructive text-destructive-foreground p-2 mt-2 text-sm rounded animate-zoom">
+                {mutation.data?.error}
               </div>
             ) : null}
           </CardFooter>

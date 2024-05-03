@@ -28,7 +28,7 @@ export default function Products() {
 
   const merchantId = useProfileStore(s => s.id);
 
-  const { isPending, data, error } = useQuery({
+  const { isPending, data } = useQuery<any, any, any>({
     queryKey: ["products", merchantId, offset],
     queryFn: () =>
       ky
@@ -52,9 +52,9 @@ export default function Products() {
         </Popover>
       </Heading>
 
-      {error ? (
+      {data?.error ? (
         <div className="text-destructive-foreground py-10 text-center">
-          {error.message ?? error.toString()}
+          {data?.error.message ?? data?.error.toString()}
         </div>
       ) : null}
 

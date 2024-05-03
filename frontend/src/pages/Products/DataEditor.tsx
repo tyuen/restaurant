@@ -83,6 +83,16 @@ export default function DataEditor({ data }: Props) {
           pattern: /^[\d.,\s]+$/,
         })}
       />
+      {saveAction.data?.error ? (
+        <div className="text-destructive-foreground bg-destructive p-1 rounded error-icon">
+          {saveAction.data?.error}
+        </div>
+      ) : null}
+      {delAction.data?.error ? (
+        <div className="text-destructive-foreground bg-destructive p-1 rounded error-icon">
+          {delAction.data?.error}
+        </div>
+      ) : null}
       <div className="flex justify-between items-center gap-2 mt-2">
         <Button
           type="button"

@@ -34,11 +34,7 @@ export default function MerchantProfile() {
   });
 
   //get profile for current merchant
-  const {
-    error,
-    isPending,
-    data: profileData,
-  } = useQuery<any>({
+  const { isPending, data: profileData } = useQuery<any, any, any>({
     queryKey: ["merchProfile"],
     queryFn: () => ky.post("/api/merchant/profile").json(),
   });
@@ -58,11 +54,13 @@ export default function MerchantProfile() {
   const nav = useNavigate();
 
   //save new merchant profile
-  const mutation = useMutation<Record<string, string>>({
+  const mutation = useMutation<Record<string, string>, any, any>({
     mutationFn: json => ky.post("/api/merchant/set-profile", { json }).json(),
-    onSuccess() {
-      queryClient.invalidateQueries();
-      nav("/");
+    onSuccess(obj) {
+      if (!obj.error) {
+        queryClient.invalidateQueries();
+        nav("/");
+      }
     },
   });
 
@@ -147,9 +145,14 @@ export default function MerchantProfile() {
               {mutation.isPending ? <Spinner /> : null}
               Save
             </Button>
-            {error ? (
+            {profileData?.error ? (
               <div className="error-icon bg-destructive text-destructive-foreground p-2 mt-2 text-sm rounded animate-zoom">
-                {error.message}
+                {profileData.error}
+              </div>
+            ) : null}
+            {mutation?.data?.error ? (
+              <div className="error-icon bg-destructive text-destructive-foreground p-2 mt-2 text-sm rounded animate-zoom">
+                {mutation.data.error}
               </div>
             ) : null}
           </CardFooter>

@@ -65,6 +65,7 @@ export default function Register() {
             <Input
               placeholder="Username"
               className="w-full"
+              autoCorrect="off"
               autoFocus
               disabled={isPending}
               {...register("userName", {

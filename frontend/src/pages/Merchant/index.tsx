@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { EarthIcon, HeartIcon } from "lucide-react";
 
 import type { TMerchant } from "./types";
+import { useProfileStore } from "@/providers/profile";
 
 type SubmitFavorite = {
   merchantId: number;
@@ -49,6 +50,8 @@ export default function Products() {
     });
   };
 
+  const role = useProfileStore(s => s.role);
+
   if (!(merchantId > 0)) return <Navigate to="/" />;
 
   return (
@@ -58,7 +61,7 @@ export default function Products() {
         <div>
           <h1 className="text-3xl font-bold flex gap-1 items-center">
             {merchant.data?.name ?? "-"}
-            {favorite.isPending ? (
+            {role !== "customer" ? null : favorite.isPending ? (
               <Spinner className="ml-3" />
             ) : (
               <Button
@@ -66,6 +69,7 @@ export default function Products() {
                 size="sm"
                 onClick={toggleFavorite}
                 disabled={favoriteAction.isPending}
+                title={favoriteAction.data?.error ?? null}
               >
                 {favorite.data?.isEmpty ? (
                   <HeartIcon className="text-muted-foreground/30" />
